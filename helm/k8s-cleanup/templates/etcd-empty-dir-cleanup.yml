@@ -3,9 +3,9 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: etcd-empty-dir-cleanup
-  namespace: kube-system
+  namespace: {{.Values.namespace}}
 spec:
-  schedule: "0 2 * * *"
+  schedule: "{{ .Values.schedule.etcd }}"
   concurrencyPolicy: "Forbid"
   jobTemplate:
     spec:
@@ -21,10 +21,10 @@ spec:
             key: node-role.kubernetes.io/master
           restartPolicy: OnFailure
           containers:
-          - name: k8s-cleanup
-            image: onfido/k8s-cleanup
+          - name: {{.Release.Name}}
+            image: {{ .Values.DockerImage }}
             command: ["/bin/bash", "/bin/etcd-empty-dir-cleanup.sh"]
             resources:
               requests:
-                cpu: 100m
-                memory: 50Mi
+                cpu: {{ .Values.ressources.cpu }}
+                memory: {{ .Values.ressources.memory }}

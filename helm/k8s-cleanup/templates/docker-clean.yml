@@ -1,31 +1,37 @@
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: k8s-cleanup
-  namespace: kube-system
+  name: {{.Release.Name}}
+  namespace: {{.Values.namespace}}
 spec:
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 10%
+  selector:
+    matchLabels:
+      app: {{.Release.Name}}
   template:
     metadata:
       labels:
-        app: k8s-cleanup
+        app: {{.Release.Name}}
     spec:
       volumes:
         - name: dockersocket
           hostPath:
             path: /var/run/docker.sock
       containers:
-      - name: k8s-cleanup
-        image: onfido/k8s-cleanup
+      - name: {{.Release.Name}}
+        image: {{ .Values.DockerImage }}
         imagePullPolicy: Always
+        env:
+          - name: DOCKER_CLEAN_INTERVAL
+            value: "{{ .Values.env.dockerCleanInterval }}"
         resources:
           requests:
-            cpu: 100m
-            memory: 50Mi
+            cpu: {{ .Values.ressources.cpu }}
+            memory: {{ .Values.ressources.memory }}
         volumeMounts:
           - name: dockersocket
             mountPath: /var/run/docker.sock

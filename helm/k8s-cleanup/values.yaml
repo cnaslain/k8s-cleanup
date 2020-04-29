@@ -1,0 +1,17 @@
+
+# NOTE: Original values for docker image and namespace
+#       I prefer overwriting these values when deploying with helm; see README.
+DockerImage: onfido/k8s-cleanup
+namespace: kube-system
+
+schedule:
+    k8s: "0 2 * * *"
+    etcd: "0 */3 * * *"
+
+env:
+    dockerCleanInterval: 1800
+    replicaSetMaxAge: 7
+
+ressources:
+    cpu: 100m
+    memory: 50Mi

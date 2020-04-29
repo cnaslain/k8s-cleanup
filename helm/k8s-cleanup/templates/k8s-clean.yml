@@ -2,16 +2,16 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: k8s-cleanup
-  namespace: kube-system
+  name: {{.Release.Name}}
+  namespace: {{.Values.namespace}}
 spec:
-  schedule: "0 */3 * * *"
+  schedule: "{{ .Values.schedule.k8s }}"
   concurrencyPolicy: "Forbid"
   jobTemplate:
     spec:
       template:
         metadata:
-          name: k8s-cleanup
+          name: {{.Release.Name}}
         spec:
           nodeSelector:
             kubernetes.io/role: master
@@ -19,13 +19,16 @@ spec:
           - effect: NoSchedule
             key: node-role.kubernetes.io/master
           restartPolicy: OnFailure
-          serviceAccountName: k8s-cleanup
+          serviceAccountName: {{.Release.Name}}
           containers:
-            - name: k8s-cleanup
-              image: onfido/k8s-cleanup
+            - name: {{.Release.Name}}
+              image: {{ .Values.DockerImage }}
               command: ["/bin/bash", "/bin/k8s-clean.sh"]
               imagePullPolicy: Always
+              env:
+                - name: DAYS
+                  value: "{{ .Values.env.dockerCleanInterval }}"
               resources:
                 requests:
-                  cpu: 100m
-                  memory: 50Mi
+                  cpu: {{ .Values.ressources.cpu }}
+                  memory: {{ .Values.ressources.memory }}

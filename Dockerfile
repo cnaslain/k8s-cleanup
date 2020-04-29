@@ -1,14 +1,15 @@
 FROM alpine
 
-ENV ETCD_VERSION 3.1.4
-ENV KUBE_VERSION 1.7.8
-
 RUN apk add --update bash curl docker \
     && rm -rf /var/cache/apk/*
+
+ENV KUBE_VERSION 1.16.7
 
 RUN cd /usr/local/bin \
     && curl -O https://storage.googleapis.com/kubernetes-release/release/v${KUBE_VERSION}/bin/linux/amd64/kubectl \
     && chmod 755 /usr/local/bin/kubectl
+
+ENV ETCD_VERSION 3.3.10
 
 RUN cd /tmp \
     && curl -OL https://github.com/coreos/etcd/releases/download/v${ETCD_VERSION}/etcd-v${ETCD_VERSION}-linux-amd64.tar.gz \ 
