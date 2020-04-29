@@ -41,9 +41,6 @@ export VERSION=0.1.0
 export DockerImage=cnaslain/k8s-cleanup:${VERSION}
 export NAMESPACE=k8s-cleanup
 
-docker build -t ${DockerImage} .
-docker push ${DockerImage}
-
 cd helm
 
 echo "apiVersion: v1" > k8s-cleanup/Chart.yaml && echo "name: k8s-cleanup" >> k8s-cleanup/Chart.yaml && echo "version: ${VERSION}" >> k8s-cleanup/Chart.yaml
