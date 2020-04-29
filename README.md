@@ -19,9 +19,26 @@ In the CronJob (`k8s-clean.yml`) you can set `DAYS` to modify the maximum age of
 Build and deploy with helm
 --------------------------
 
+* get project sources
+
+```bash
+git clone https://github.com/cnaslain/k8s-cleanup.git
+```
+
+* Private docker repository
+
 ```bash
 export VERSION=0.1.0
 export DockerImage=docker-registry.your-repo.com/k8s-cleanup:${VERSION}
+docker build -t ${DockerImage} .
+docker push ${DockerImage}
+```
+
+* Deploy with helm the built version of Docker hub with tag 0.1.0 in a custom namespace
+
+```bash
+export VERSION=0.1.0
+export DockerImage=cnaslain/k8s-cleanup:${VERSION}
 export NAMESPACE=k8s-cleanup
 
 docker build -t ${DockerImage} .
