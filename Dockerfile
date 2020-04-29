@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.11.6
 
 RUN apk add --update bash curl docker \
     && rm -rf /var/cache/apk/*
